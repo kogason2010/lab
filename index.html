@@ -716,14 +716,23 @@ body {
     g.stroke(); g.globalAlpha = 1;
     // desktop icons: medium size, column-first grid (88 x 100 cells), same order as the site
     const u = H / 900, font = "'Segoe UI', 'Noto Sans', system-ui, sans-serif";
-    const items = [["Recycle Bin", "bin"], ["Showcase", "show"], ["File Explorer", "folder"], ["Application Notes", "folder"], ["Instrument Explainers", "folder"], ["HPLC Tools", "app", "#2fb3c9", "#1f63c9"], ["Solvane", "app", "#5fe39a", "#1f9a8a"], ["Resolve", "app", "#63d3ff", "#9b7bff"], ["Photos", "photos"], ["About me.txt", "txt"], ["Terminal", "term"], ["Restore Desktop", "app", "#8aa0ab", "#4f5965"]];
+    const items = [["Recycle Bin", "bin"], ["Lab", "lab"], ["Showcase", "show"], ["File Explorer", "folder"], ["Application Notes", "folder"], ["Instrument Explainers", "folder"], ["HPLC Tools", "app", "#2fb3c9", "#1f63c9"], ["Solvane", "app", "#5fe39a", "#1f9a8a"], ["Resolve", "app", "#63d3ff", "#9b7bff"], ["Photos", "photos"], ["About me.txt", "txt"], ["Terminal", "term"], ["Restore Desktop", "app", "#8aa0ab", "#4f5965"]];
     const rows = Math.max(1, Math.floor((900 - 48 - 6) / 100));
+    function labIcon(x0, y0, sz) {
+      const gr = g.createLinearGradient(x0, y0, x0 + sz, y0 + sz); gr.addColorStop(0, "#63D3FF"); gr.addColorStop(1, "#1F8A84");
+      g.fillStyle = gr; rr(x0, y0, sz, sz, sz * 0.25); g.fill();
+      const k = sz / 28; g.strokeStyle = "#fff"; g.lineWidth = Math.max(1, 1.9 * k); g.lineCap = "round"; g.lineJoin = "round";
+      g.beginPath(); g.moveTo(x0 + 11 * k, y0 + 5 * k); g.lineTo(x0 + 17 * k, y0 + 5 * k);
+      g.moveTo(x0 + 12 * k, y0 + 5 * k); g.lineTo(x0 + 12 * k, y0 + 11.2 * k); g.lineTo(x0 + 6.6 * k, y0 + 20.4 * k); g.lineTo(x0 + 8.2 * k, y0 + 23 * k);
+      g.lineTo(x0 + 19.8 * k, y0 + 23 * k); g.lineTo(x0 + 21.4 * k, y0 + 20.4 * k); g.lineTo(x0 + 16 * k, y0 + 11.2 * k); g.lineTo(x0 + 16 * k, y0 + 5 * k); g.stroke();
+    }
     function rr(x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
     items.forEach((it, i) => {
       const c = Math.floor(i / rows), r = i % rows;
       const left = (4 + c * 88) * u, top = (6 + r * 100) * u, ic = 44 * u, ix = left + (84 * u - ic) / 2, iy = top + 6 * u;
       g.save(); g.shadowColor = "rgba(0,0,0,0.25)"; g.shadowBlur = 2; g.shadowOffsetY = 1;
       if (it[1] === "folder") { g.fillStyle = "#e8ad2c"; rr(ix + ic * 0.06, iy + ic * 0.16, ic * 0.88, ic * 0.7, ic * 0.08); g.fill(); g.fillStyle = "#f8d36e"; rr(ix + ic * 0.06, iy + ic * 0.3, ic * 0.88, ic * 0.56, ic * 0.08); g.fill(); }
+      else if (it[1] === "lab") { labIcon(ix + ic * 0.06, iy + ic * 0.06, ic * 0.88); }
       else if (it[1] === "bin") { g.fillStyle = "rgba(220,232,240,0.9)"; rr(ix + ic * 0.22, iy + ic * 0.22, ic * 0.56, ic * 0.68, ic * 0.06); g.fill(); g.fillStyle = "rgba(160,176,188,0.9)"; g.fillRect(ix + ic * 0.16, iy + ic * 0.14, ic * 0.68, ic * 0.08); }
       else if (it[1] === "txt") { g.fillStyle = "#fff"; rr(ix + ic * 0.2, iy + ic * 0.08, ic * 0.6, ic * 0.84, ic * 0.05); g.fill(); g.fillStyle = "#9fb3c4"; for (let l = 0; l < 4; l++) g.fillRect(ix + ic * 0.3, iy + ic * (0.3 + l * 0.14), ic * 0.4, ic * 0.04); }
       else if (it[1] === "term") { g.fillStyle = "#0c0f13"; rr(ix + ic * 0.08, iy + ic * 0.14, ic * 0.84, ic * 0.72, ic * 0.1); g.fill(); g.fillStyle = "#63d3ff"; g.font = `bold ${ic * 0.32}px monospace`; g.fillText(">_", ix + ic * 0.2, iy + ic * 0.62); }
@@ -741,7 +750,7 @@ body {
     const th = 48 * u, ty = H - th;
     g.fillStyle = P.mica; g.fillRect(0, ty, W, th);
     g.fillStyle = P.stroke; g.fillRect(0, ty, W, 1);
-    const bw = 40 * u, gap = 4 * u, pillW = 128 * u, n = 5;
+    const bw = 40 * u, gap = 4 * u, pillW = 128 * u, n = 6;
     const total = bw + gap + pillW + gap + bw + gap + n * bw + (n - 1) * gap;
     let x = (W - total) / 2; const by = ty + (th - bw) / 2;
     // start (the site's own start icon: gradient tile with a peak trace)
@@ -756,9 +765,10 @@ body {
     x += pillW + gap;
     g.strokeStyle = P.fg; g.lineWidth = Math.max(1, 1.2 * u); g.strokeRect(x + 12 * u, by + 13 * u, 9 * u, 14 * u); g.strokeRect(x + 23 * u, by + 13 * u, 6 * u, 14 * u);
     x += bw + gap;
-    ["folder", "show", "app", "photos", "term"].forEach((k, i) => {
+    ["lab", "folder", "show", "app", "photos", "term"].forEach((k, i) => {
       const ic = 24 * u, ax = x + (bw - ic) / 2, ay = by + (bw - ic) / 2;
-      if (k === "folder") { g.fillStyle = "#e8ad2c"; rr(ax + ic * 0.04, ay + ic * 0.2, ic * 0.92, ic * 0.64, ic * 0.08); g.fill(); g.fillStyle = "#f8d36e"; rr(ax + ic * 0.04, ay + ic * 0.34, ic * 0.92, ic * 0.5, ic * 0.08); g.fill(); }
+      if (k === "lab") { labIcon(ax + ic * 0.06, ay + ic * 0.06, ic * 0.88); }
+      else if (k === "folder") { g.fillStyle = "#e8ad2c"; rr(ax + ic * 0.04, ay + ic * 0.2, ic * 0.92, ic * 0.64, ic * 0.08); g.fill(); g.fillStyle = "#f8d36e"; rr(ax + ic * 0.04, ay + ic * 0.34, ic * 0.92, ic * 0.5, ic * 0.08); g.fill(); }
       else if (k === "term") { g.fillStyle = "#0c0f13"; rr(ax + ic * 0.06, ay + ic * 0.14, ic * 0.88, ic * 0.72, ic * 0.12); g.fill(); g.fillStyle = "#63d3ff"; g.fillRect(ax + ic * 0.24, ay + ic * 0.56, ic * 0.24, ic * 0.07); }
       else { const gr = g.createLinearGradient(ax, ay, ax + ic, ay + ic); const cs = k === "show" ? ["#4FC3F7", "#9B7BFF"] : k === "photos" ? ["#4fc3f7", "#1f63c9"] : ["#2fb3c9", "#1f63c9"];
         gr.addColorStop(0, cs[0]); gr.addColorStop(1, cs[1]); g.fillStyle = gr; rr(ax + ic * 0.06, ay + ic * 0.06, ic * 0.88, ic * 0.88, ic * 0.22); g.fill(); }
